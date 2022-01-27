@@ -1,0 +1,13 @@
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
+
+  describe "Model validations" do
+    it { should have_many(:postits) }
+    it { should validate_presence_of(:fullname) }
+    it { should validate_presence_of(:username) }
+    it { should validate_uniqueness_of(:username) }
+    it { should have_secure_password }
+    it { should validate_presence_of(:password_digest) }
+  end
+end

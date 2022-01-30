@@ -11,7 +11,7 @@ RSpec.describe "Postits", type: :request do
       let(:per_page) { 5 }
       before { 
         FactoryBot.create_list(:postit, 21)
-        get "/postits", params: { page: page, per_page: per_page }
+        get "/v1/postits", params: { page: page, per_page: per_page }
       }
 
       it "works" do
@@ -24,7 +24,7 @@ RSpec.describe "Postits", type: :request do
     end
 
     it "returns a bad request when parameters are missing" do
-      get "/postits"
+      get "/v1/postits"
       expect(response).to have_http_status :bad_request
       expect(parsed_body.keys).to include 'error'
       expect(parsed_body['error']).to eq 'missing parameters'
@@ -33,7 +33,7 @@ RSpec.describe "Postits", type: :request do
 
   describe "GET /postits/:id" do
     context "when everything goes well" do
-      before { get "/postits/#{postit.id}" }
+      before { get "/v1/postits/#{postit.id}" }
 
       it "works" do
         expect(response).to have_http_status(200)
@@ -54,7 +54,7 @@ RSpec.describe "Postits", type: :request do
     end
 
     it "returns not found when te resource can not be found" do
-      get "/postits/0"
+      get "/v1/postits/0"
       expect(response).to have_http_status :not_found
     end
   end
@@ -62,14 +62,14 @@ RSpec.describe "Postits", type: :request do
   describe "POST /postits" do
     context "when unauthenticated" do
       it "returns unauthenticated" do
-        post "/postits"
+        post "/v1/postits"
         expect(response).to have_http_status :unauthorized
       end
     end
 
     context "when authenticated" do
       let(:params) { { postit: { title: "title", body: "body", level: 0 } } }
-      before { post "/postits", params: params, headers: authentication_header }
+      before { post "/v1/postits", params: params, headers: authentication_header }
 
       it "works" do
         expect(response).to have_http_status :created
@@ -77,14 +77,14 @@ RSpec.describe "Postits", type: :request do
 
       it "creates a new postit" do
         expect {
-          post "/postits", params: params, headers: authentication_header
+          post "/v1/postits", params: params, headers: authentication_header
         }.to change {
           current_user.postits.count
         }.by 1
       end
 
       it "has correct fields values for the created postit" do
-        post "/postits", params: params, headers: authentication_header
+        post "/v1/postits", params: params, headers: authentication_header
         created_postit = current_user.postits.last
         expect(created_postit.title).to eq "title"
         expect(created_postit.body).to eq "body"
@@ -93,13 +93,13 @@ RSpec.describe "Postits", type: :request do
 
       it "return a bad request when a parameter is missing" do
         params[:postit].delete(:level)
-        post "/postits", params: params, headers: authentication_header
+        post "/v1/postits", params: params, headers: authentication_header
         expect(response).to have_http_status :bad_request
       end
 
       it "return a bad request when a parameter has the wrong type" do
         params[:postit][:level] = "test"
-        post "/postits", params: params, headers: authentication_header
+        post "/v1/postits", params: params, headers: authentication_header
         expect(response).to have_http_status :bad_request
       end
     end
@@ -109,14 +109,14 @@ RSpec.describe "Postits", type: :request do
     let(:params) { { postit: { title: "A new title", level: 1 } } }
     context "when unauthenticated" do
       it "returns unauthenticated" do
-        patch "/postits/#{postit.id}"
+        patch "/v1/postits/#{postit.id}"
         expect(response).to have_http_status :unauthorized
       end
     end
 
     context "when authenticated" do
       context "when everything goes well" do
-        before { patch "/postits/#{postit.id}", params: params, headers: authentication_header }
+        before { patch "/v1/postits/#{postit.id}", params: params, headers: authentication_header }
 
         it { expect(response).to have_http_status :success }
 
@@ -129,18 +129,18 @@ RSpec.describe "Postits", type: :request do
 
       it "return a bad request when a parameter is malformed" do
         params[:postit][:level] = "test"
-        patch "/postits/#{postit.id}", params: params, headers: authentication_header
+        patch "/v1/postits/#{postit.id}", params: params, headers: authentication_header
         expect(response).to have_http_status :bad_request
       end
 
       it "returns a not found when resource can not be found" do
-        patch "/postits/0", params: params, headers: authentication_header
+        patch "/v1/postits/0", params: params, headers: authentication_header
         expect(response).to have_http_status :not_found
       end
       
       it "returns a forbidden when requester is not the owner of the resource" do
         another_postit = FactoryBot.create(:postit)
-        patch "/postits/#{another_postit.id}", params: params, headers: authentication_header
+        patch "/v1/postits/#{another_postit.id}", params: params, headers: authentication_header
         expect(response).to have_http_status :forbidden
       end
     end
@@ -150,14 +150,14 @@ RSpec.describe "Postits", type: :request do
     context "when unauthenticated" do
 
       it "returns unauthorized" do
-        delete "/postits/#{postit.id}"
+        delete "/v1/postits/#{postit.id}"
         expect(response).to have_http_status :unauthorized
       end
     end
 
     context "when authenticated" do
       context "when everything goes well" do
-        before { delete "/postits/#{postit.id}", headers: authentication_header }
+        before { delete "/v1/postits/#{postit.id}", headers: authentication_header }
 
         it { expect(response).to have_http_status :no_content }
 
@@ -167,13 +167,13 @@ RSpec.describe "Postits", type: :request do
       end
 
       it "returns a not found when resource can not be found" do
-        delete "/postits/0", headers: authentication_header
+        delete "/v1/postits/0", headers: authentication_header
         expect(response).to have_http_status :not_found
       end
 
       it "returns a forbidden when requester is not the owner of the resource" do
         another_postit = FactoryBot.create(:postit)
-        delete "/postits/#{another_postit.id}", headers: authentication_header
+        delete "/v1/postits/#{another_postit.id}", headers: authentication_header
         expect(response).to have_http_status :forbidden
       end
     end

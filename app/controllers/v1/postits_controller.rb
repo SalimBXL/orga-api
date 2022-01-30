@@ -1,4 +1,4 @@
-class PostitsController < ApplicationController
+class V1::PostitsController < ApplicationController
     before_action :authenticate_user, only: [:create, :update, :destroy]
     before_action :find_postit, only: [:show, :update, :destroy]
     before_action :check_authorization, only: [:update, :destroy]

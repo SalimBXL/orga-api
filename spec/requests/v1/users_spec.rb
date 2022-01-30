@@ -3,7 +3,7 @@ require 'pp'
 
 RSpec.describe "Users API", type: :request do
   describe "GET /users/:id" do
-    before { get "/users/#{current_user.id}", headers: authentication_header }
+    before { get "/v1/users/#{current_user.id}", headers: authentication_header }
       
     it "works" do
       expect(response).to have_http_status(200)

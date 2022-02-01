@@ -5,7 +5,6 @@ class TableTennisController < ApplicationController
         if current_user
             render json: { response: 'authorized pong' }
         else
-            #retour = "unauthorized pong (" + current_user + ")"
             render json: { response: 'unauthorized pong' }
         end
     end

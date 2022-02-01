@@ -36,7 +36,7 @@ class V1::PostitsController < ApplicationController
 
     def find_postit
         @postit = Postit.find_by(id: params[:id])
-        render json: {}, status: :not_found and return unless @postit
+        render json: { error: "not found"}, status: :not_found and return unless @postit
     end
 
     def check_authorization

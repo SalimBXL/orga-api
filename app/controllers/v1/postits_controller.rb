@@ -31,7 +31,7 @@ class V1::PostitsController < ApplicationController
     private
 
     def postit_params
-        params.required(:postit).permit(:title, :body, :level)
+        params.required(:postit).permit(:title, :body, :level, :is_private)
     end
 
     def find_postit

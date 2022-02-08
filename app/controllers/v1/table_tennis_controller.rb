@@ -1,4 +1,4 @@
-class TableTennisController < ApplicationController
+class V1::TableTennisController < ApplicationController
     #before_action :authenticate_user
 
     def ping

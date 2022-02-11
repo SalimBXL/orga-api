@@ -4,5 +4,6 @@ FactoryBot.define do
         title { Faker::Lorem.sentence }
         level { Faker::Number.between(from: 0, to: 4) }
         body { Faker::Lorem.paragraph }
+        is_private { false }
     end
 end

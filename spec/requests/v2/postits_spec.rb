@@ -45,6 +45,7 @@ RSpec.describe "Postits", type: :request do
           title: postit.title,
           body: postit.body,
           level: postit.level,
+          is_private: postit.is_private,
           user: {
             id: postit.user.id,
             fullname: postit.user.fullname
